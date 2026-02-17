@@ -1,20 +1,26 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@900&display=swap');
 body { font-family: 'Inter', sans-serif; background: #050505; }
 
-/* Logout Button Alive Look */
-.logout-btn {
-    box-shadow: 0 0 0px rgba(239, 68, 68, 0);
-}
-.logout-btn:hover {
-    box-shadow: 0 0 30px rgba(239, 68, 68, 0.4);
-    transform: scale(1.05);
+/* Logout Glow */
+.glow-btn { background: transparent; transition: 0.3s; animation: slow-pulse 3s infinite; }
+.glow-btn:hover, .glow-btn:active { background: #ef4444; color: white !important; box-shadow: 0 0 30px #ef4444; transform: scale(1.05); }
+
+@keyframes slow-pulse { 
+    0%, 100% { border-color: rgba(239, 68, 68, 0.3); } 
+    50% { border-color: rgba(239, 68, 68, 0.8); box-shadow: 0 0 15px rgba(239, 68, 68, 0.2); } 
 }
 
-/* Tab Active State */
+/* 3D Carousel Fix */
+.carousel-3d { position: relative; width: 120px; height: 160px; transform-style: preserve-3d; transform: perspective(1000px) rotateX(-10deg); animation: rotateCarousel 25s linear infinite; }
+.carousel-item { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; border-radius: 15px; border: 2px solid rgba(6, 182, 212, 0.2); transform: rotateY(calc(var(--i) * 45deg)) translateZ(250px); }
+@keyframes rotateCarousel { from { transform: perspective(1000px) rotateX(-10deg) rotateY(0deg); } to { transform: perspective(1000px) rotateX(-10deg) rotateY(360deg); } }
+
+/* Progress Shimmer */
+#progress-bar { background: linear-gradient(90deg, #06b6d4, #22d3ee, #06b6d4); background-size: 200% 100%; animation: shimmer 1.5s linear infinite; box-shadow: 0 0 20px rgba(6, 182, 212, 0.6); }
+@keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+
 .tab-btn.active { color: #06b6d4; text-shadow: 0 0 15px #06b6d4; transform: translateY(-3px); }
-
-/* Progress Bar Shine */
-#progress-bar {
-    box-shadow: 0 0 15px #06b6d4;
-    background: linear-gradient(90deg, #06b6d4, #22d3ee);
-}
+.media-card { transition: 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); cursor: pointer; }
+.media-card:hover { transform: translateY(-5px); border-color: #06b6d4; }
+.scale-up { animation: scaleEffect 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+@keyframes scaleEffect { from { transform: scale(0.5); opacity: 0; } to { transform: scale(1); opacity: 1; } }
