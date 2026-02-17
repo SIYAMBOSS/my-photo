@@ -2,27 +2,65 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>SIYAM VAULT | VIEW ONLY</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SIYAM VAULT | CLOUD</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
-<body class="bg-[#050505] text-white select-none overflow-x-hidden" oncontextmenu="return false;">
+<body class="bg-[#050505] text-white overflow-x-hidden select-none">
 
-    <header class="py-10 text-center relative z-10">
-        <h1 class="text-[10px] font-black tracking-[0.6em] text-cyan-500 uppercase">Siyam's Private Gallery</h1>
-        <div id="status-indicator" class="mt-2 text-[8px] text-white/20 uppercase tracking-widest flex items-center justify-center gap-2">
-            <span class="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse"></span> Protected Mode
+    <div id="login-screen" class="fixed inset-0 z-[500] bg-black flex items-center justify-center p-6 text-center">
+        <div class="w-full max-w-sm bg-[#111] p-10 rounded-[40px] border border-white/5 shadow-2xl">
+            <h1 class="text-cyan-500 font-black tracking-widest uppercase mb-8">Access Vault</h1>
+            <input type="email" id="email-field" placeholder="Enter Gmail ID" class="w-full bg-black border border-white/10 p-4 rounded-2xl mb-4 text-center focus:border-cyan-500 outline-none transition-all">
+            <button onclick="login()" class="w-full bg-cyan-600 py-4 rounded-2xl font-bold tracking-widest hover:shadow-[0_0_20px_rgba(6,182,212,0.4)]">ENTER</button>
         </div>
-    </header>
-
-    <div class="w-full h-[320px] flex items-center justify-center overflow-hidden">
-        <div id="carousel-3d" class="carousel-3d"></div>
     </div>
 
-    <div id="gallery" class="grid grid-cols-2 md:grid-cols-4 gap-2 p-2 pb-20 max-w-6xl mx-auto">
+    <div id="vault-ui" class="hidden min-h-screen">
+        <header class="py-10 text-center">
+            <h1 id="user-header" class="text-[9px] font-black tracking-[0.5em] text-cyan-500 uppercase">Vault</h1>
+            <button onclick="location.reload()" class="text-[7px] text-white/20 mt-2 underline italic">LOGOUT</button>
+        </header>
+
+        <div class="w-full h-[250px] flex items-center justify-center overflow-hidden mb-6">
+            <div id="carousel-3d" class="carousel-3d"></div>
         </div>
+
+        <div class="flex justify-center gap-12 mb-8">
+            <button onclick="switchTab('photo')" class="tab-btn active" id="tab-photo">PHOTOS</button>
+            <button onclick="switchTab('video')" class="tab-btn" id="tab-video">VIDEOS</button>
+        </div>
+
+        <div id="gallery" class="grid grid-cols-2 md:grid-cols-4 gap-4 p-4 max-w-6xl mx-auto pb-32"></div>
+
+        <div class="fixed bottom-8 right-8 z-50">
+            <input type="file" id="file-input" multiple class="hidden" onchange="showTokenPopup()">
+            <button onclick="document.getElementById('file-input').click()" class="bg-cyan-600 w-16 h-16 rounded-full flex items-center justify-center shadow-2xl hover:scale-110 active:scale-95 transition-all">
+                <i class="fa-solid fa-plus text-white text-2xl"></i>
+            </button>
+        </div>
+    </div>
+
+    <div id="viewer" class="fixed inset-0 z-[1000] bg-black/95 hidden flex flex-col items-center justify-center p-4 backdrop-blur-md">
+        <button onclick="closeViewer()" class="absolute top-8 right-8 text-white/50 text-3xl"><i class="fa-solid fa-xmark"></i></button>
+        <div id="viewer-content" class="max-w-4xl w-full flex justify-center"></div>
+        <div class="flex gap-12 mt-10">
+            <button id="viewer-save" class="text-cyan-500 flex flex-col items-center gap-2"><i class="fa-solid fa-download text-2xl"></i><span class="text-[8px] font-bold">SAVE</span></button>
+            <button id="viewer-del" class="text-red-500 flex flex-col items-center gap-2"><i class="fa-solid fa-trash text-2xl"></i><span class="text-[8px] font-bold">DELETE</span></button>
+        </div>
+    </div>
+
+    <div id="token-popup" class="fixed inset-0 z-[1100] bg-black/80 backdrop-blur-sm hidden flex items-center justify-center p-6">
+        <div class="bg-[#111] p-8 rounded-[35px] border border-cyan-500/20 text-center w-full max-w-xs shadow-2xl">
+            <div class="text-cyan-500 mb-4"><i class="fa-solid fa-shield-halved fa-2x"></i></div>
+            <h2 class="text-white font-bold mb-4 tracking-widest text-sm">SECURITY TOKEN</h2>
+            <input type="password" id="upload-token" placeholder="Enter Token" class="w-full bg-black border border-white/10 p-4 rounded-2xl mb-4 text-center outline-none focus:border-cyan-500 transition-all">
+            <button onclick="uploadFiles()" class="w-full bg-cyan-600 py-4 rounded-2xl font-bold text-xs tracking-widest">VERIFY & UPLOAD</button>
+            <button onclick="closePopup()" class="mt-4 text-white/20 text-[9px] uppercase tracking-widest">CANCEL</button>
+        </div>
+    </div>
 
     <script src="script.js"></script>
 </body>
