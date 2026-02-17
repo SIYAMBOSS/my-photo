@@ -1,54 +1,61 @@
+import os
 import telebot
 import requests
 import base64
-import json
+import time
 
-# সরাসরি আপনার টোকেন ও আইডি বসানো হয়েছে
-BOT_TOKEN = "8536299808:AAHJFWEna66RMHZdq-AV20Ak1KOOSwTJT9k"
-GH_TOKEN = "YOUR_GITHUB_PERSONAL_ACCESS_TOKEN" # এখানে আপনার গিটহাব টোকেনটি বসান
-REPO = "SIYAMBOSS/siyam-vault"
-MY_ID = 7416528268
+# গিটহাব সিক্রেটস থেকে টোকেনগুলো আসবে
+BOT_TOKEN = os.getenv('BOT_TOKEN')
+GH_TOKEN = os.getenv('GH_TOKEN')
+REPO = "SIYAMBOSS/my-photo"
 
 bot = telebot.TeleBot(BOT_TOKEN)
+user_data = {}
 
-def set_status_on_github(status):
-    url = f"https://api.github.com/repos/{REPO}/contents/status.json"
+@bot.message_handler(commands=['start'])
+def start(message):
+    bot.send_message(message.chat.id, "🔐 **Welcome to SIYAM VAULT!**\n\nপ্রথমে আপনার জিমেইল আইডি দিন:")
+    bot.register_next_step_handler(message, get_email)
+
+def get_email(message):
+    email = message.text.strip().lower()
+    user_data[message.chat.id] = {'email': email}
+    bot.send_message(message.chat.id, "🔑 এবার একটি সিক্রেট টোকেন (পাসওয়ার্ড) দিন:")
+    bot.register_next_step_handler(message, get_token)
+
+def get_token(message):
+    token = message.text.strip()
+    user_data[message.chat.id]['token'] = token
+    bot.send_message(message.chat.id, f"✅ সেটআপ সম্পন্ন!\n🎯 Gmail: `{user_data[message.chat.id]['email']}`\n\nএখন ফটো বা ভিডিও পাঠান, আমি সেভ করে দিচ্ছি।")
+
+@bot.message_handler(content_types=['photo', 'video'])
+def handle_media(message):
+    if message.chat.id not in user_data:
+        bot.send_message(message.chat.id, "⚠️ আগে /start দিয়ে জিমেইল সেট করুন!")
+        return
+
+    email = user_data[message.chat.id]['email']
+    
+    if message.content_type == 'photo':
+        file_id = message.photo[-1].file_id
+        ext = ".jpg"
+    else:
+        file_id = message.video.file_id
+        ext = ".mp4"
+
+    file_info = bot.get_file(file_id)
+    downloaded = bot.download_file(file_info.file_path)
+    
+    filename = f"{int(time.time_ns())}{ext}"
+    path = f"vault/{email}/photos/{filename}"
+    content = base64.b64encode(downloaded).decode('utf-8')
+    
+    url = f"https://api.github.com/repos/{REPO}/contents/{path}"
     headers = {"Authorization": f"token {GH_TOKEN}"}
+    data = {"message": f"Cloud Sync: {email}", "content": content}
     
-    # বর্তমান ফাইলের sha সংগ্রহ
-    res = requests.get(url, headers=headers).json()
-    sha = res.get('sha')
-    
-    # নতুন ডাটা এনকোড করা
-    content = json.dumps({"allowDownload": status})
-    encoded = base64.b64encode(content.encode()).decode()
-    
-    data = {
-        "message": f"Security: {'ON' if not status else 'OFF'}",
-        "content": encoded,
-        "sha": sha
-    }
-    requests.put(url, json=data, headers=headers)
-
-@bot.message_handler(commands=['start', 'control'])
-def control(message):
-    if message.chat.id == MY_ID:
-        markup = telebot.types.InlineKeyboardMarkup()
-        markup.add(
-            telebot.types.InlineKeyboardButton("✅ Download ON", callback_data="on"),
-            telebot.types.InlineKeyboardButton("❌ Download OFF", callback_data="off")
-        )
-        bot.send_message(message.chat.id, "🎛️ SIYAM VAULT Control Panel:", reply_markup=markup)
-    else:
-        bot.reply_to(message, "🚫 Unauthorized Access.")
-
-@bot.callback_query_handler(func=lambda call: True)
-def callback_query(call):
-    if call.data == "on":
-        set_status_on_github(True)
-        bot.edit_message_text("🔓 Status: Users can now download photos from Website.", call.message.chat.id, call.message.message_id)
-    else:
-        set_status_on_github(False)
-        bot.edit_message_text("🔒 Status: Website is now Protected (No Download).", call.message.chat.id, call.message.message_id)
+    res = requests.put(url, json=data, headers=headers)
+    if res.status_code == 201:
+        bot.send_message(message.chat.id, "✅ Uploaded to Vault!")
 
 bot.infinity_polling()
