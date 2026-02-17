@@ -1,0 +1,50 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@900&display=swap');
+
+body { font-family: 'Inter', sans-serif; background: radial-gradient(circle at top, #0c121a 0%, #050505 100%); }
+
+/* 3D Carousel */
+.carousel-3d {
+    position: relative; width: 130px; height: 180px;
+    transform-style: preserve-3d;
+    animation: autoRotate 30s linear infinite;
+}
+
+@keyframes autoRotate {
+    from { transform: perspective(1000px) rotateY(0deg); }
+    to { transform: perspective(1000px) rotateY(360deg); }
+}
+
+.carousel-item {
+    position: absolute; width: 100%; height: 100%;
+    object-fit: cover; border-radius: 20px;
+    border: 1px solid rgba(255,255,255,0.05);
+    transform: rotateY(calc(var(--i) * 60deg)) translateZ(220px);
+    pointer-events: none;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+}
+
+/* Protection Logic */
+.media-item {
+    position: relative; aspect-ratio: 3/4;
+    overflow: hidden; border-radius: 16px;
+    background: #0a0a0a; border: 1px solid rgba(255,255,255,0.03);
+}
+
+.media-item img {
+    width: 100%; height: 100%; object-fit: cover;
+    pointer-events: none; transition: 0.5s;
+}
+
+.protection-layer {
+    position: absolute; inset: 0; z-index: 10;
+    background: transparent;
+}
+
+/* Download Button Style */
+.dl-btn {
+    @apply absolute bottom-3 right-3 bg-cyan-600 text-white w-8 h-8 flex items-center justify-center rounded-full shadow-lg z-20 scale-0 transition-transform duration-300;
+}
+.media-item.allow .dl-btn { scale: 1; }
+.media-item.allow img { pointer-events: auto; }
+
+::-webkit-scrollbar { width: 0; }
