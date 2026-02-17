@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>SIYAM VAULT | VIEW ONLY</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="bg-[#050505] text-white select-none overflow-x-hidden" oncontextmenu="return false;">
+
+    <header class="py-10 text-center relative z-10">
+        <h1 class="text-[10px] font-black tracking-[0.6em] text-cyan-500 uppercase">Siyam's Private Gallery</h1>
+        <div id="status-indicator" class="mt-2 text-[8px] text-white/20 uppercase tracking-widest flex items-center justify-center gap-2">
+            <span class="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse"></span> Protected Mode
+        </div>
+    </header>
+
+    <div class="w-full h-[320px] flex items-center justify-center overflow-hidden">
+        <div id="carousel-3d" class="carousel-3d"></div>
+    </div>
+
+    <div id="gallery" class="grid grid-cols-2 md:grid-cols-4 gap-2 p-2 pb-20 max-w-6xl mx-auto">
+        </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
