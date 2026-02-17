@@ -1,50 +1,15 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@900&display=swap');
+body { font-family: 'Inter', sans-serif; }
 
-body { font-family: 'Inter', sans-serif; background: radial-gradient(circle at top, #0c121a 0%, #050505 100%); }
+/* 3D Carousel Alive */
+.carousel-3d { position: relative; width: 100px; height: 140px; transform-style: preserve-3d; animation: rotate 25s linear infinite; }
+.carousel-item { position: absolute; width: 100%; height: 100%; object-fit: cover; border-radius: 12px; transform: rotateY(calc(var(--i) * 60deg)) translateZ(180px); box-shadow: 0 0 20px rgba(6,182,212,0.2); }
+@keyframes rotate { from { transform: rotateY(0deg); } to { transform: rotateY(360deg); } }
 
-/* 3D Carousel */
-.carousel-3d {
-    position: relative; width: 130px; height: 180px;
-    transform-style: preserve-3d;
-    animation: autoRotate 30s linear infinite;
-}
+/* Tab Button Animation */
+.tab-btn { font-size: 10px; font-weight: 900; letter-spacing: 3px; color: rgba(255,255,255,0.2); transition: 0.4s; }
+.tab-btn.active { color: #06b6d4; text-shadow: 0 0 10px #06b6d4; transform: scale(1.1); }
 
-@keyframes autoRotate {
-    from { transform: perspective(1000px) rotateY(0deg); }
-    to { transform: perspective(1000px) rotateY(360deg); }
-}
-
-.carousel-item {
-    position: absolute; width: 100%; height: 100%;
-    object-fit: cover; border-radius: 20px;
-    border: 1px solid rgba(255,255,255,0.05);
-    transform: rotateY(calc(var(--i) * 60deg)) translateZ(220px);
-    pointer-events: none;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-}
-
-/* Protection Logic */
-.media-item {
-    position: relative; aspect-ratio: 3/4;
-    overflow: hidden; border-radius: 16px;
-    background: #0a0a0a; border: 1px solid rgba(255,255,255,0.03);
-}
-
-.media-item img {
-    width: 100%; height: 100%; object-fit: cover;
-    pointer-events: none; transition: 0.5s;
-}
-
-.protection-layer {
-    position: absolute; inset: 0; z-index: 10;
-    background: transparent;
-}
-
-/* Download Button Style */
-.dl-btn {
-    @apply absolute bottom-3 right-3 bg-cyan-600 text-white w-8 h-8 flex items-center justify-center rounded-full shadow-lg z-20 scale-0 transition-transform duration-300;
-}
-.media-item.allow .dl-btn { scale: 1; }
-.media-item.allow img { pointer-events: auto; }
-
-::-webkit-scrollbar { width: 0; }
+/* Media Cards */
+.media-card { transition: 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); cursor: pointer; }
+.media-card:hover { transform: translateY(-5px) scale(1.02); border-color: #06b6d4; }
